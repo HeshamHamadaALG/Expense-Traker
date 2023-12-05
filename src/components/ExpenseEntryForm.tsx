@@ -1,23 +1,29 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  TEInput,
-  TEModal,
-  TEModalBody,
-  TEModalContent,
-  TEModalDialog,
-  TEModalFooter,
-  TEModalHeader,
-  TERipple,
-  TESelect,
-  TETextarea,
-} from "tw-elements-react";
 import { AppDispatch, RootState } from "../state/store";
 import {
   Transaction,
   addTransactionItem,
+  getTotalBalance,
+  getTotalInCome,
+  getTotalOutCome,
 } from "../state/Reducers/TransactionSlice";
-import { addCategory } from "../state/Reducers/CategoriesSlice";
+import { Category, addCategory } from "../state/Reducers/CategoriesSlice";
+import {
+  Modal,
+  ModalClose,
+  Typography,
+  ModalDialog,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Input,
+  Stack,
+  Select,
+  Option,
+  Button,
+  Textarea,
+} from "@mui/joy";
 
 interface Props {
   isModalVisible: boolean;
@@ -64,6 +70,9 @@ const ExpenseEntryForm: React.FC<Props> = ({
     dispatch(
       addTransactionItem({ ...newTransaction, id: self.crypto.randomUUID() })
     );
+    dispatch(getTotalBalance());
+    dispatch(getTotalInCome());
+    dispatch(getTotalOutCome());
     onCloseModal();
     clearInputFields();
   };
@@ -81,155 +90,135 @@ const ExpenseEntryForm: React.FC<Props> = ({
 
   return (
     <>
-      {console.log("Categories: ", Categories)}
-      <TEModal show={isModalVisible}>
-        <TEModalDialog centered>
-          <TEModalContent>
-            <TEModalHeader>
-              {/* <!--Modal title--> */}
-              <h5 className="text-xl font-medium leading-normal text-neutral-800 dark:text-neutral-200">
-                Add New Transaction
-              </h5>
-              <button
-                type="button"
-                className="box-content rounded-none border-none hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
-                onClick={() => onCloseModal()}
-                aria-label="Close"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="h-6 w-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </TEModalHeader>
-            {/* <!--Modal body--> */}
-            <TEModalBody>
-              {/*body*/}
-              <form>
-                <TEInput
-                  id="cost"
+      <Modal
+        aria-labelledby="modal-title"
+        aria-describedby="modal-desc"
+        open={isModalVisible}
+        onClose={() => {
+          onCloseModal();
+          clearInputFields();
+        }}
+        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+      >
+        <ModalDialog size="lg">
+          <ModalClose variant="plain" sx={{ m: 1 }} />
+          <Typography
+            component="h2"
+            id="modal-title"
+            level="h4"
+            textColor="inherit"
+            fontWeight="lg"
+            mb={1}
+          >
+            Add New Transaction
+          </Typography>
+          <form onSubmit={onSubmitHandler}>
+            <Stack spacing={1.5} sx={{ minWidth: 300 }}>
+              <FormControl>
+                <FormLabel>Amount</FormLabel>
+                <Input
+                  name="cost"
+                  required
                   type="number"
-                  label="Amount"
-                  size="lg"
-                  value={newTransaction.cost}
                   onChange={(event) =>
                     onFieldInput(
-                      event.target.id as keyof Transaction,
+                      event.target.name as keyof Transaction,
                       Number(event.target.value)
                     )
                   }
-                >
-                  <small className="absolute w-full text-neutral-500 dark:text-neutral-200">
-                    Enter your Expenses with (-) nigative value your Income with
-                    positive value
-                  </small>
-                </TEInput>
-                <TEInput
-                  id="item"
+                />
+                <FormHelperText>
+                  Enter your Expenses with (-) nigative value your Income with
+                  positive value
+                </FormHelperText>
+              </FormControl>
+
+              <FormControl>
+                <FormLabel>Item</FormLabel>
+                <Input
+                  name="item"
+                  required
                   type="text"
-                  label="Item"
-                  className="mt-12 mb-6"
-                  size="lg"
-                  value={newTransaction.item}
                   onChange={(event) =>
                     onFieldInput(
-                      event.target.id as keyof Transaction,
+                      event.target.name as keyof Transaction,
                       event.target.value
                     )
                   }
-                ></TEInput>
-                <TEInput
-                  id="date"
+                />
+              </FormControl>
+
+              <FormControl>
+                <FormLabel>Date</FormLabel>
+                <Input
+                  name="date"
+                  required
                   type="date"
-                  label="Date"
-                  className="mt-12 mb-6"
-                  size="lg"
-                  value={newTransaction.date}
                   onChange={(event) =>
                     onFieldInput(
-                      event.target.id as keyof Transaction,
+                      event.target.name as keyof Transaction,
                       event.target.value
                     )
                   }
-                ></TEInput>
+                />
+              </FormControl>
 
-                <div className="relative mt-12 mb-6">
-                  <TESelect
-                    id="category"
-                    label="category"
-                    preventFirstSelection
-                    data={Categories}
-                    value={newTransaction.category}
-                    size="lg"
-                    onValueChange={(event: any) =>
-                      onFieldInput("category", event.value)
-                    }
-                  >
-                    <div className="relative flex-auto p-4">
-                      <TEInput
-                        type="text"
-                        label="Add Category"
-                        className="relative"
-                        onKeyUp={(e) => {
-                          e.key === "Enter" ? onAddCategory(e) : null;
-                        }}
-                      >
-                        <small className="absolute w-full text-neutral-500 dark:text-neutral-200">
-                          press "ENTER" to add new Cateogry
-                        </small>
-                      </TEInput>
-                    </div>
-                  </TESelect>
-                </div>
+              <FormControl>
+                <FormLabel>Category</FormLabel>
+                <Select
+                  name="category"
+                  placeholder="Select a category"
+                  required
+                  onChange={(event: any) =>
+                    onFieldInput("category", event.target.innerText)
+                  }
+                >
+                  {Categories.map((categoryItem: Category, index: number) => (
+                    <Option key={index} value={categoryItem.value}>
+                      {categoryItem.text}
+                    </Option>
+                  ))}
+                  <FormControl>
+                    <Input
+                      placeholder="Add 7 Category"
+                      type="text"
+                      endDecorator={<Button>Add</Button>}
+                    ></Input>
+                  </FormControl>
+                </Select>
+              </FormControl>
 
-                <TETextarea
-                  id="notes"
-                  label="Notes"
-                  rows={4}
-                  value={newTransaction.notes}
+              <FormControl>
+                <Textarea
+                  placeholder="Notes..."
+                  minRows={4}
+                  name="notes"
                   onChange={(event) =>
                     onFieldInput(
-                      event.target.id as keyof Transaction,
+                      event.target.name as keyof Transaction,
                       event.target.value
                     )
                   }
-                ></TETextarea>
-                {/* <!--Submit button--> */}
-                <TEModalFooter>
-                  <TERipple rippleColor="light">
-                    <button
-                      type="button"
-                      className="inline-block rounded bg-primary-100 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-primary-700 transition duration-150 ease-in-out hover:bg-primary-accent-100 focus:bg-primary-accent-100 focus:outline-none focus:ring-0 active:bg-primary-accent-200"
-                      onClick={() => onCloseModal()}
-                    >
-                      Close
-                    </button>
-                  </TERipple>
-                  <TERipple rippleColor="light">
-                    <button
-                      type="button"
-                      className="bg-green-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                      onClick={onSubmitHandler}
-                    >
-                      Save
-                    </button>
-                  </TERipple>
-                </TEModalFooter>
-              </form>
-            </TEModalBody>
-          </TEModalContent>
-        </TEModalDialog>
-      </TEModal>
+                />
+              </FormControl>
+              <Button type="submit" color="success">
+                Save
+              </Button>
+              <Button
+                type="button"
+                variant="outlined"
+                color="neutral"
+                onClick={() => {
+                  onCloseModal();
+                  clearInputFields();
+                }}
+              >
+                Cancel
+              </Button>
+            </Stack>
+          </form>
+        </ModalDialog>
+      </Modal>
     </>
   );
 };

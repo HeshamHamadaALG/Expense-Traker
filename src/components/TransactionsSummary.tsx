@@ -1,9 +1,30 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../state/store";
-import { Transaction, deleteTransactionItem } from "../state/Reducers/TransactionSlice";
+import {
+  Transaction,
+  deleteTransactionItem,
+  getTotalBalance,
+  getTotalInCome,
+  getTotalOutCome,
+} from "../state/Reducers/TransactionSlice";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Box, Card, CardContent, Button } from "@mui/joy";
 
-const TransactionsSummary: React.FC = () => {
+interface Props {
+  onOpenModal: () => void;
+}
+
+const TransactionsSummary: React.FC<Props> = ({ onOpenModal }) => {
   const dispatch = useDispatch<AppDispatch>();
   const Transactions = useSelector(
     (state: RootState) => state.transaction.TransactionItems
@@ -11,74 +32,78 @@ const TransactionsSummary: React.FC = () => {
 
   const onHandleDelete = (deletedItem: Transaction) => {
     dispatch(deleteTransactionItem(deletedItem));
-  }
+    dispatch(getTotalBalance());
+    dispatch(getTotalInCome());
+    dispatch(getTotalOutCome());
+  };
 
   return (
-    <div className="flex flex-col">
-      <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-          <div className="overflow-hidden">
-            <table className="min-w-full text-center text-sm font-light">
-              <thead className="border-b font-medium dark:border-neutral-500">
-                <tr>
-                  <th scope="col" className="px-6 py-4">
-                    Item
-                  </th>
-                  <th scope="col" className="px-6 py-4">
-                    Category
-                  </th>
-                  <th scope="col" className="px-6 py-4">
-                    Cost
-                  </th>
-                  <th scope="col" className="px-6 py-4">
-                    Date
-                  </th>
-                  <th scope="col" className="px-6 py-4">
-                    Notes
-                  </th>
-                  <th scope="col" className="px-6 py-4">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {Transactions.map((transItem: any) => (
-                  <tr
-                    key={transItem.id}
-                    className="border-b border-danger-200 bg-danger-100 text-neutral-800"
-                    style={{backgroundColor: transItem.cost < 0 ?  "rgb(250 229 233)" : "rgb(214 250 228)"}}
-                  >
-                    <td className="whitespace-nowrap px-6 py-4">
-                      {transItem.item}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4">
-                      {transItem.category}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4">
-                      {transItem.cost} EGP
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4">
-                      {transItem.date}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4">
-                      {transItem.notes}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4">
-                      <button
-                        onClick={() => onHandleDelete(transItem)}
-                        className="bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+    <>
+      <Card variant="plain" invertedColors>
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+          <Button variant="solid" color="success" onClick={() => onOpenModal()}>
+            Add New Transaction
+          </Button>
+        </Box>
+        <Box sx={{ position: "relative" }}>
+          <CardContent orientation="horizontal">
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Item</TableCell>
+                    <TableCell>Category</TableCell>
+                    <TableCell>Cost</TableCell>
+                    <TableCell>Date</TableCell>
+                    <TableCell>Notes</TableCell>
+                    <TableCell>Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                {Transactions.length > 0 ? (
+                  <TableBody>
+                    {Transactions.map((transItem: any) => (
+                      <TableRow
+                        key={transItem.id}
+                        style={{
+                          backgroundColor:
+                            transItem.cost < 0
+                              ? "rgb(250 229 233)"
+                              : "rgb(214 250 228)",
+                        }}
                       >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
+                        <TableCell>{transItem.item}</TableCell>
+                        <TableCell>{transItem.category}</TableCell>
+                        <TableCell>{transItem.cost} EGP</TableCell>
+                        <TableCell>{transItem.date}</TableCell>
+                        <TableCell>{transItem.notes}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant="solid"
+                            color="danger"
+                            onClick={() => onHandleDelete(transItem)}
+                            startDecorator={<DeleteIcon />}
+                          >
+                            Delete
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                ) : (
+                  <TableBody>
+                    <TableCell colSpan={6} align="center">
+                      <h2 style={{ color: "#636b74" }}>
+                        No Transactions Added
+                      </h2>
+                    </TableCell>
+                  </TableBody>
+                )}
+              </Table>
+            </TableContainer>
+          </CardContent>
+        </Box>
+      </Card>
+    </>
   );
 };
 
