@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../state/store";
 import {
@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Card, CardContent, Button } from "@mui/joy";
+import FiltersCard from "./FiltersCard";
 
 interface Props {
   onOpenModal: () => void;
@@ -29,6 +30,18 @@ const TransactionsSummary: React.FC<Props> = ({ onOpenModal }) => {
   const Transactions = useSelector(
     (state: RootState) => state.transaction.TransactionItems
   );
+  const [filteredTransactions, setFilteredTransactions] =
+    useState(Transactions);
+
+    useEffect(() => {
+      const result = Transactions.filter(function (ob1) {
+        return filteredTransactions.some(function (ob2) {
+          return ob1.id === ob2.id;
+        });
+      }); 
+      setFilteredTransactions(result);
+    }, [Transactions]);
+    
 
   const onHandleDelete = (deletedItem: Transaction) => {
     dispatch(deleteTransactionItem(deletedItem));
@@ -37,11 +50,26 @@ const TransactionsSummary: React.FC<Props> = ({ onOpenModal }) => {
     dispatch(getTotalOutCome());
   };
 
+  const resetFilteredValues = () => {
+    setFilteredTransactions(Transactions);
+  }
+
   return (
     <>
-      <Card variant="plain" invertedColors>
+      <Card variant="plain" invertedColors sx={{ marginTop: "1rem" }}>
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-          <Button variant="solid" color="success" onClick={() => onOpenModal()}>
+          <FiltersCard
+            filterTransactions={Transactions}
+            onHandleFilter={setFilteredTransactions}
+            resetFilters={resetFilteredValues}
+          />
+          <Button
+            variant="solid"
+            color="success"
+            size="lg"
+            onClick={() => onOpenModal()}
+            sx={{ marginLeft: "auto" }}
+          >
             Add New Transaction
           </Button>
         </Box>
@@ -59,9 +87,9 @@ const TransactionsSummary: React.FC<Props> = ({ onOpenModal }) => {
                     <TableCell>Actions</TableCell>
                   </TableRow>
                 </TableHead>
-                {Transactions.length > 0 ? (
+                {filteredTransactions.length > 0 ? (
                   <TableBody>
-                    {Transactions.map((transItem: any) => (
+                    {filteredTransactions.map((transItem: any) => (
                       <TableRow
                         key={transItem.id}
                         style={{

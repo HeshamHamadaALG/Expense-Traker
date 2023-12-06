@@ -21,7 +21,7 @@ const initialState: TransactionState = {
     {
       id: "1",
       item: "Tomato",
-      category: "Food",
+      category: "Groceries",
       cost: -12,
       date: "03/12/2023",
       notes: "Any notes",
@@ -29,7 +29,7 @@ const initialState: TransactionState = {
     {
       id: "2",
       item: "Salary",
-      category: "Job",
+      category: "Transportation",
       cost: 500,
       date: "03/11/2023",
       notes: "Any notes",
@@ -37,7 +37,7 @@ const initialState: TransactionState = {
     {
       id: "3",
       item: "Mobile case",
-      category: "Tech",
+      category: "Entertainment",
       cost: -200,
       date: "03/12/2023",
       notes: "Any notes",
@@ -45,7 +45,7 @@ const initialState: TransactionState = {
     {
       id: "4",
       item: "Mobile case",
-      category: "Ttech",
+      category: "Entertainment",
       cost: -200,
       date: "03/11/2023",
       notes: "Any notes",
