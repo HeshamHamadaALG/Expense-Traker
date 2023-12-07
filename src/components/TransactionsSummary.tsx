@@ -35,7 +35,7 @@ const TransactionsSummary: React.FC<Props> = ({ onOpenModal }) => {
   const FilteredTransactions = useSelector(
     (state: RootState) => state.transaction.FilteredTransactions
   );
-  
+
   useEffect(() => {
     dispatch(getTotalBalance());
     dispatch(getTotalInCome());
@@ -123,11 +123,13 @@ const TransactionsSummary: React.FC<Props> = ({ onOpenModal }) => {
                   </TableBody>
                 ) : (
                   <TableBody>
-                    <TableCell colSpan={6} align="center">
-                      <h2 style={{ color: "#636b74" }}>
-                        No Transactions Added
-                      </h2>
-                    </TableCell>
+                    <TableRow>
+                      <TableCell colSpan={6} align="center">
+                        <h2 style={{ color: "#636b74" }}>
+                          No Transactions Added
+                        </h2>
+                      </TableCell>
+                    </TableRow>
                   </TableBody>
                 )}
               </Table>

@@ -81,7 +81,7 @@ const FiltersCard: React.FC<Props> = ({
         placeholder="Filter By…"
         size="lg"
         onChange={(e: any, newValue) => {
-          e.preventDefault();
+          e && e.preventDefault();
           setSelectedValue(newValue);
         }}
         {...(selectedValue && {
@@ -117,7 +117,7 @@ const FiltersCard: React.FC<Props> = ({
           placeholder="Select a category"
           size="lg"
           onChange={(e: any, catValue) => {
-            e.preventDefault();
+            e && e.preventDefault();
             handleCategoryFilter(catValue);
           }}
         >
