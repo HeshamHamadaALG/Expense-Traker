@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../state/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../state/store";
 import {
   Button,
   Card,
@@ -10,9 +10,10 @@ import {
   Stack,
   Typography,
 } from "@mui/joy";
+import { setMonthlyBudget } from "../state/Reducers/TransactionSlice";
 
 const MonthlyBudget: React.FC = () => {
-  const [monthlyBudget, setMonthlyBudget] = useState<number>(0);
+  const dispatch = useDispatch<AppDispatch>();
   const [totalTransactionsCost, setTotalTransactionsCost] = useState<number>(0);
   const [incomeTransactionsCost, setIncomeTransactionsCost] =
     useState<number>(0);
@@ -21,6 +22,9 @@ const MonthlyBudget: React.FC = () => {
   const [currentMonthString, setCurrentMonthString] = useState<string>("");
   const [monthlyBudgetInput, setMonthlyBudgetInput] = useState<number>(0);
 
+  const monthlyBudget = useSelector(
+    (state: RootState) => state.transaction.MonthlyBudget
+  );
   const transactions = useSelector(
     (state: RootState) => state.transaction.TransactionItems
   );
@@ -55,7 +59,7 @@ const MonthlyBudget: React.FC = () => {
 
   const handleBudgetSubmit = (e: any) => {
     e.preventDefault();
-    setMonthlyBudget(monthlyBudgetInput);
+    dispatch(setMonthlyBudget(monthlyBudgetInput));
   };
 
   function getCurrentMonth(): string {

@@ -15,55 +15,16 @@ export interface TransactionState {
   Balance: number;
   InCome: number;
   OutCome: number;
+  MonthlyBudget: number;
 }
 
 const initialState: TransactionState = {
-  TransactionItems: [
-    {
-      id: "1",
-      item: "PC Game",
-      category: "Entertainment",
-      cost: -200,
-      date: "06/03/2022",
-      notes: "Any notes",
-    },
-    {
-      id: "2",
-      item: "Tomato",
-      category: "Groceries",
-      cost: -12,
-      date: "12/03/2023",
-      notes: "Any notes",
-    },
-    {
-      id: "4",
-      item: "Salary",
-      category: "Transportation",
-      cost: 500,
-      date: "11/03/2023",
-      notes: "Any notes",
-    },
-    {
-      id: "5",
-      item: "Mobile case",
-      category: "Entertainment",
-      cost: -200,
-      date: "12/03/2023",
-      notes: "Any notes",
-    },
-    {
-      id: "6",
-      item: "Mobile case",
-      category: "Entertainment",
-      cost: -200,
-      date: "11/03/2023",
-      notes: "Any notes",
-    },
-  ],
+  TransactionItems: [],
   FilteredTransactions: [],
   Balance: 0,
   InCome: 0,
   OutCome: 0,
+  MonthlyBudget: 0,
 };
 
 export const TransactionSlice = createSlice({
@@ -108,6 +69,9 @@ export const TransactionSlice = createSlice({
     resetFilters: (state) => {
       state.FilteredTransactions = state.TransactionItems;
     },
+    setMonthlyBudget: (state, action: PayloadAction<number>) => {
+      state.MonthlyBudget = action.payload;
+    }
   },
 });
 
@@ -119,5 +83,6 @@ export const {
   getTotalOutCome,
   setFilteredTransactions,
   resetFilters,
+  setMonthlyBudget,
 } = TransactionSlice.actions;
 export default TransactionSlice.reducer;
