@@ -80,7 +80,10 @@ const FiltersCard: React.FC<Props> = ({
         value={selectedValue}
         placeholder="Filter By…"
         size="lg"
-        onChange={(e, newValue) => setSelectedValue(newValue)}
+        onChange={(e: any, newValue) => {
+          e.preventDefault();
+          setSelectedValue(newValue);
+        }}
         {...(selectedValue && {
           endDecorator: (
             <IconButton
@@ -113,7 +116,10 @@ const FiltersCard: React.FC<Props> = ({
           name="categoryFilter"
           placeholder="Select a category"
           size="lg"
-          onChange={(e, catValue) => handleCategoryFilter(catValue)}
+          onChange={(e: any, catValue) => {
+            e.preventDefault();
+            handleCategoryFilter(catValue);
+          }}
         >
           {Categories.map((categoryItem: Category, index: number) => (
             <Option key={index} value={categoryItem.value}>

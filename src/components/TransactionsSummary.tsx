@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../state/store";
 import {
@@ -7,6 +7,8 @@ import {
   getTotalBalance,
   getTotalInCome,
   getTotalOutCome,
+  resetFilters,
+  setFilteredTransactions,
 } from "../state/Reducers/TransactionSlice";
 import {
   Paper,
@@ -30,29 +32,31 @@ const TransactionsSummary: React.FC<Props> = ({ onOpenModal }) => {
   const Transactions = useSelector(
     (state: RootState) => state.transaction.TransactionItems
   );
-  const [filteredTransactions, setFilteredTransactions] =
-    useState(Transactions);
-
-    useEffect(() => {
-      const result = Transactions.filter(function (ob1) {
-        return filteredTransactions.some(function (ob2) {
-          return ob1.id === ob2.id;
-        });
-      }); 
-      setFilteredTransactions(result);
-    }, [Transactions]);
-    
-
-  const onHandleDelete = (deletedItem: Transaction) => {
-    dispatch(deleteTransactionItem(deletedItem));
+  const FilteredTransactions = useSelector(
+    (state: RootState) => state.transaction.FilteredTransactions
+  );
+  
+  useEffect(() => {
     dispatch(getTotalBalance());
     dispatch(getTotalInCome());
     dispatch(getTotalOutCome());
+  }, [FilteredTransactions]);
+
+  useEffect(() => {
+    dispatch(resetFilters());
+  }, []);
+
+  const onHandleDelete = (deletedItem: Transaction) => {
+    dispatch(deleteTransactionItem(deletedItem));
+  };
+
+  const onSetFilteredValues = (filters: Transaction[]) => {
+    dispatch(setFilteredTransactions(filters));
   };
 
   const resetFilteredValues = () => {
-    setFilteredTransactions(Transactions);
-  }
+    dispatch(resetFilters());
+  };
 
   return (
     <>
@@ -60,7 +64,7 @@ const TransactionsSummary: React.FC<Props> = ({ onOpenModal }) => {
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
           <FiltersCard
             filterTransactions={Transactions}
-            onHandleFilter={setFilteredTransactions}
+            onHandleFilter={onSetFilteredValues}
             resetFilters={resetFilteredValues}
           />
           <Button
@@ -87,9 +91,9 @@ const TransactionsSummary: React.FC<Props> = ({ onOpenModal }) => {
                     <TableCell>Actions</TableCell>
                   </TableRow>
                 </TableHead>
-                {filteredTransactions.length > 0 ? (
+                {FilteredTransactions.length > 0 ? (
                   <TableBody>
-                    {filteredTransactions.map((transItem: any) => (
+                    {FilteredTransactions.map((transItem: any) => (
                       <TableRow
                         key={transItem.id}
                         style={{

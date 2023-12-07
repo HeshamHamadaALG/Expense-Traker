@@ -4,11 +4,8 @@ import { AppDispatch, RootState } from "../state/store";
 import {
   Transaction,
   addTransactionItem,
-  getTotalBalance,
-  getTotalInCome,
-  getTotalOutCome,
 } from "../state/Reducers/TransactionSlice";
-import { Category, addCategory } from "../state/Reducers/CategoriesSlice";
+import { Category } from "../state/Reducers/CategoriesSlice";
 import {
   Modal,
   ModalClose,
@@ -24,6 +21,8 @@ import {
   Button,
   Textarea,
 } from "@mui/joy";
+import { Add } from "@mui/icons-material";
+import AddCategory from "./AddCategory";
 
 interface Props {
   isModalVisible: boolean;
@@ -38,6 +37,7 @@ const ExpenseEntryForm: React.FC<Props> = ({
   const Categories = useSelector(
     (state: RootState) => state.categories.Categories
   );
+  const [showCategoryModal, setShowCategoryModal] = useState<boolean>(false);
   const [newTransaction, setNewTransaction] = useState<Transaction>({
     id: "",
     item: "",
@@ -70,22 +70,8 @@ const ExpenseEntryForm: React.FC<Props> = ({
     dispatch(
       addTransactionItem({ ...newTransaction, id: self.crypto.randomUUID() })
     );
-    dispatch(getTotalBalance());
-    dispatch(getTotalInCome());
-    dispatch(getTotalOutCome());
     onCloseModal();
     clearInputFields();
-  };
-
-  const onAddCategory = (e: any) => {
-    dispatch(
-      addCategory({
-        text: e.target.value,
-        value: e.target.value,
-      })
-    );
-
-    e.target.value = "";
   };
 
   return (
@@ -178,13 +164,14 @@ const ExpenseEntryForm: React.FC<Props> = ({
                       {categoryItem.text}
                     </Option>
                   ))}
-                  <FormControl>
-                    <Input
-                      placeholder="Add 7 Category"
-                      type="text"
-                      endDecorator={<Button>Add</Button>}
-                    ></Input>
-                  </FormControl>
+                  <Button
+                    variant="outlined"
+                    color="neutral"
+                    startDecorator={<Add />}
+                    onClick={() => setShowCategoryModal(true)}
+                  >
+                    Add New Category
+                  </Button>
                 </Select>
               </FormControl>
 
@@ -217,6 +204,7 @@ const ExpenseEntryForm: React.FC<Props> = ({
               </Button>
             </Stack>
           </form>
+          <AddCategory isShowAddCategory={showCategoryModal} onCloseAddCategory={setShowCategoryModal}/>
         </ModalDialog>
       </Modal>
     </>

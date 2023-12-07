@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../state/store";
+import React from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../state/store";
 import {
   Box,
   Button,
@@ -9,19 +9,12 @@ import {
   CardContent,
   Typography,
 } from "@mui/joy";
-import { getTotalBalance, getTotalInCome, getTotalOutCome } from "../state/Reducers/TransactionSlice";
+import { Link } from "react-router-dom";
 
 const BalanceCard: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const Balance = useSelector((state: RootState) => state.transaction.Balance);
   const InCome = useSelector((state: RootState) => state.transaction.InCome);
   const OutCome = useSelector((state: RootState) => state.transaction.OutCome);
-
-  useEffect(() => {
-    dispatch(getTotalBalance());
-    dispatch(getTotalInCome());
-    dispatch(getTotalOutCome());
-  }, [dispatch]);
 
   return (
     <div>
@@ -62,7 +55,7 @@ const BalanceCard: React.FC = () => {
             </CardContent>
           </Card>
           <CardActions>
-            <Button component="a" href="/reports" variant="solid" size="sm">
+            <Button component={Link} to={"/reports"} variant="solid" size="sm">
               See Reports
             </Button>
           </CardActions>
