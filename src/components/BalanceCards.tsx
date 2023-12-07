@@ -10,8 +10,9 @@ import {
   Typography,
 } from "@mui/joy";
 import { Link } from "react-router-dom";
+import MonthlyBudget from "./MonthlyBudget";
 
-const BalanceCard: React.FC = () => {
+const BalanceCards: React.FC = () => {
   const Balance = useSelector((state: RootState) => state.transaction.Balance);
   const InCome = useSelector((state: RootState) => state.transaction.InCome);
   const OutCome = useSelector((state: RootState) => state.transaction.OutCome);
@@ -60,9 +61,11 @@ const BalanceCard: React.FC = () => {
             </Button>
           </CardActions>
         </Card>
+      {/* get month budget */}
+        <MonthlyBudget />
       </Box>
     </div>
   );
 };
 
-export default BalanceCard;
+export default BalanceCards;

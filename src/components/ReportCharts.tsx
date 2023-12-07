@@ -258,7 +258,7 @@ const ReportCharts: React.FC = () => {
               </Select>
             )}
           </CardContent>
-          <Line options={options} data={data} />
+          <Line options={options} data={data} style={{ maxHeight: "550px" }} />
         </Box>
       </Card>
     </>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ExpenseEntryForm from "./ExpenseEntryForm";
 import TransactionsSummary from "./TransactionsSummary";
-import BalanceCard from "./BalanceCard";
+import BalanceCards from "./BalanceCards";
 
 function MainPage() {
   const [showEntryForm, setShowEntryForm] = useState<boolean>(false);
@@ -15,7 +15,7 @@ function MainPage() {
         <h1 className="text-2xl font-bold mb-4 text-center">
           Expense Tracker App
         </h1>
-        <BalanceCard />
+        <BalanceCards />
         <ExpenseEntryForm
           isModalVisible={showEntryForm}
           onCloseModal={onHideModal}
